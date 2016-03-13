@@ -1,0 +1,28 @@
+contract cardShuffler{
+    
+    bytes32[9] public deck;
+    bytes32[9] public hashedDeck;
+    
+    function hashCards(bytes32 _cardOne, bytes32 _cardTwo, 
+                    bytes32 _cardThree, bytes32 _cardFour, 
+                    bytes32 _cardFive, bytes32 _cardSix, 
+                    bytes32 _cardSeven, bytes32 _cardEight, 
+                    bytes32 _cardNine, bytes32 _secret){
+                     
+        deck[0] = _cardOne;
+        deck[1] = _cardTwo;
+        deck[2] = _cardThree;
+        deck[3] = _cardFour;
+        deck[4] = _cardFive;
+        deck[5] = _cardSix;
+        deck[6] = _cardSeven;
+        deck[7] = _cardEight;
+        deck[8] = _cardNine;    
+        
+        for (uint i = 0; i <= 8; i++)
+        {
+            hashedDeck[i] = sha3(deck[i], _secret);
+        }
+    }
+                  
+}                    
