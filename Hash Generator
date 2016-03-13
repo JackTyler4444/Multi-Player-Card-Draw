@@ -2,7 +2,7 @@ contract HashGen {
     
     bytes32 public hashOutput;
 
-    function hash(string _secret) {
+    function hash(bytes32 _secret) {
         hashOutput = sha3(_secret);
     }
     
