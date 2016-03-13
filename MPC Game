@@ -1,0 +1,259 @@
+contract MultiplayerCardDraw {
+    struct Key
+    {
+        bytes32 blindedKey;
+        uint deposit;
+        address player;
+        bool revealed;
+    }
+
+    uint public gameStart;
+    uint public seatingEnd;
+    uint public tempRevealTime;
+    uint public revealEnd;
+    bool public ended;
+    
+    uint public dealEnd;
+    uint public shuffleEnd;
+    uint public drawEnd;
+    
+    uint public numberOfPlayers;
+ 
+    bytes32 public highCard;
+    
+    address public playerOneAddress;
+    address public playerTwoAddress;
+    address public gameWinner;
+    
+    uint public keyCount;
+    uint public revealCount;
+    uint public playerOneChoice;
+    uint public playerTwoChoice;
+    
+    bool public  playerOneRevealed;
+    bool public  playerTwoRevealed;
+    
+    uint public playerOneDeposit;
+    
+    uint public refundLowBid;
+    uint public refundHighBid;
+    
+    uint public depositMin;
+   
+    uint public refund;
+    uint public shuffleCount;
+    uint public drawCount;
+    uint public drawDeck;
+    
+    bytes32[9] public deck;
+    
+    bytes32[9] public secrets;
+    
+    //mapping(address => Secret[]) public secrets; 
+    
+    address[9] public playersAddresses;
+     
+    mapping(address => Key[]) public keys;
+
+    event gameEnded(address winner, bytes32 highCard);
+
+    /// Modifiers are a convenient way to validate inputs to
+    /// functions. `onlyBefore` is applied to `bid` below:
+    /// The new function body is the modifier's body where
+    /// `_` is replaced by the old function body.
+    modifier onlyBefore(uint _time) { if (now >= _time) throw; _ }
+    modifier onlyAfter(uint _time) { if (now <= _time) throw; _ }
+
+    //starts game with inputs for choosing end and reveal end
+    function MultiplayerCardDraw(uint _seatingTime,
+                            uint _revealTime, uint _numberOfPlayers)
+    {
+        numberOfPlayers = _numberOfPlayers;
+        //9 players max
+        if (numberOfPlayers > 9){
+            highCard = 0x3848d55b721bf7b0263af92a4a976b44761c128e9b9d35acc82ec8938764f718;
+            gameEnded(playerOneAddress, highCard);
+            throw;
+        }
+        
+        gameStart = now;
+        seatingEnd = now + _seatingTime;
+        revealEnd = seatingEnd + _revealTime;
+        tempRevealTime = _revealTime;
+        numberOfPlayers = _numberOfPlayers;
+        
+        //initialize deck
+        deck[0] = 1;
+        deck[1] = 2;
+        deck[2] = 3;
+        deck[3] = 4;
+        deck[4] = 5;
+        deck[5] = 6;
+        deck[6] = 7;
+        deck[7] = 8;
+        deck[8] = 9;
+    }
+
+    ///Each player enters a hash of their key
+    function seating(bytes32 _blindedKey)
+        onlyBefore(seatingEnd)
+        {
+        //each player gives hash verifies key later
+        keys[msg.sender].push(Key({
+            blindedKey: _blindedKey,
+            deposit: msg.value,
+            player: msg.sender,
+            revealed: false
+        }));
+        //first time set the depositMin to first players depots
+        if (keyCount == 0){
+            depositMin = msg.value;
+        }
+        //later can simply return this with error 
+        //output "deposit too small"
+        if (msg.value < depositMin){
+            throw;
+        }
+        //refund the player if the deposit is bigger 
+        //than the first players's deposit
+        if (msg.value > depositMin){
+           refund = msg.value - depositMin;
+           msg.sender.send(refund);
+        }
+        playersAddresses[keyCount] = msg.sender;
+        //after key/bet is given raise the choice counter
+        keyCount += 1;
+        //if n keys have been given end seating period
+        //clears highcard field in case it is full from seating error
+        if (keyCount == numberOfPlayers){
+           seatingEnd = now;
+           highCard = 0;
+           revealEnd = now + tempRevealTime;
+        }   
+    }
+    ///player can refund provided 2nd player hasn't choosen
+    
+    function refundChoice()
+        onlyBefore(seatingEnd)
+     {   
+        //to take players sender.address and refund if table isn't full
+        //or seating time isn't over
+       if (keyCount < numberOfPlayers){
+             msg.sender.send(depositMin);
+             highCard = 0;
+             gameEnded(msg.sender, highCard);
+             keyCount -= 1;
+        }   
+     }
+     
+    function shuffle(bytes32 _cardOne, bytes32 _cardTwo, 
+                        bytes32 _cardThree, bytes32 _cardFour, 
+                        bytes32 _cardFive, bytes32 _cardSix, 
+                        bytes32 _cardSeven, bytes32 _cardEight, 
+                        bytes32 _cardNine)
+        onlyAfter(seatingEnd)
+    {
+    //player 1 - n input a shuffled and encrypted deck
+    //from the output.  First player uses 1, 2,..9
+    
+        deck[0] = _cardOne;
+        deck[1] = _cardTwo;
+        deck[2] = _cardThree;
+        deck[3] = _cardFour;
+        deck[4] = _cardFive;
+        deck[5] = _cardSix;
+        deck[6] = _cardSeven;
+        deck[7] = _cardEight;
+        deck[8] = _cardNine;
+    
+    //starting wtih p1 each player encrypts and shuffles the deck
+    // input into fuction and output for next player
+    //output the input so the next player can copy it
+    //if player times out then share his equity with remaining players
+    
+        shuffleCount += 1;
+    
+        if (shuffleCount == keyCount){
+            shuffleEnd = now;
+            return;
+        }
+    } 
+ 
+    ///players reveal their keys
+    function reveal(bytes32 _secret)
+        onlyAfter(seatingEnd)
+        onlyBefore(revealEnd)
+    {
+        var key = keys[msg.sender][0];
+ 
+        var secret = _secret;
+        //if the hash of the value and secret isn't equal to 
+        //the previously provided hash then throw the attempt
+        //to reveal
+        if (key.blindedKey != sha3(secret)){
+            throw;
+        }
+        //flag each player that reveals
+        key.revealed = true;
+ 
+        revealCount += 1;
+       
+        if (revealCount == keyCount){
+             revealEnd = now;
+            return;
+        }
+    }        
+    //refund all players if one player doesn't reveal
+    function refundSplitEquity()
+        onlyAfter(revealEnd)
+    {
+        // throw any attempts after game is ended
+        if (ended) throw;
+        
+        //if not every player revealed then share equity among honest players
+        if (revealCount < keyCount){
+            uint splitEquity;
+            splitEquity = ((depositMin) * (keyCount - revealCount)) / revealCount;
+             //for each player with flag = true give back minimum plus extra/
+            var key = keys[msg.sender][0];
+            if (key.revealed == true){
+                msg.sender.send(depositMin + splitEquity);
+                highCard = 0;
+                gameEnded(msg.sender, highCard);
+                //set to false so player cannot reclaim
+                key.revealed == false;
+                if (revealCount == 0){
+                    ended = true;
+                }
+                return;
+            }
+        }
+    }    
+        
+    //add up reveals, determine and pay winner
+    function claimHighCard()
+        onlyAfter(revealEnd)
+    {   
+        if (revealCount < keyCount){
+            throw;
+        }
+
+        //highCard = numberOfPlayers;
+        
+        //search the deck for the number of players card
+        //pay the corresponding player seat to card
+        //position
+        for (uint i = 0; i <= numberOfPlayers; i++)
+        {
+            if (deck[i] == highCard){
+                gameWinner = playersAddresses[i];
+                gameEnded(gameWinner, highCard);
+                gameWinner.send(this.balance);
+                ended = true;
+                return;
+            }
+
+        } 
+    }
+    function () { throw; }
+}
