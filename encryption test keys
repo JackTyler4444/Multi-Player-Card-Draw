@@ -1,0 +1,39 @@
+ecrecover(bytes32, uint8, bytes32, bytes32) returns (address):
+    recover public key from elliptic curve signature - arguments are (data, v, r, s)
+
+http://travistidwell.com/blog/2013/09/06/an-online-rsa-public-and-private-key-generator/
+
+-----BEGIN RSA PRIVATE KEY-----
+MIIBOgIBAAJBAL8Rwxah5gQ1UZTSXoZhF8eBq6txJt3eF1zD7zjJnXnp/waZmLoI
+O/AueLOhcbywTopqD3lGJTruwf3pzam+tMUCAwEAAQJBAJmvRcYsjwEPigE0fMeF
+zUSx7k1GBEctXolFKGP692mZAcdfMrIunIM53RTRRRkzUHPvdMTQWMCAPM31ywfL
+hUECIQD1g1so0n1SMNwfO3zDK2mPXwqJ6xQHfTNJRDtLRo+g2QIhAMc7ErgzJACw
+k2n6TXxZnryR7lDSyrJNyaBhtcUJ4b/NAiAUjiXguhbR/dNALivY71aMMWnheDQa
+GGpl1Ped6s91qQIgVy+62XFH6CVd3Zr0Hd76YHtcV3Jn0e/ItK8N5NSWPmECICTx
+Llrr1SDvEJLA1vEzJkZmS8LHBu5rfejIOrF10DZh
+-----END RSA PRIVATE KEY-----
+
+
+-----BEGIN PUBLIC KEY-----
+MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAL8Rwxah5gQ1UZTSXoZhF8eBq6txJt3e
+F1zD7zjJnXnp/waZmLoIO/AueLOhcbywTopqD3lGJTruwf3pzam+tMUCAwEAAQ==
+-----END PUBLIC KEY-----
+
+key2
+
+-----BEGIN RSA PRIVATE KEY-----
+MIIBOQIBAAJAaXiFMpP+/IIWfmiNXUvo3qutmXD/Sg9JY2ne5hcuryFXqo+yWeWD
+WypLJXNzH4fQ0utA4yl/yiAAn04P9trSyQIDAQABAkBVmu25jKfUuZ2aQjAjPn6n
+ZP7FYRLEQL4XQ5IYfU518/G81nd+Rgw30fUifcMbrkmXUsPmpJAVKNvDGj7uy1o1
+AiEAxe6kpeBpLNLY0VJewN0wwWRlUzbBLsoN+x0O7AgsrxcCIQCIabjBOtTzgziG
++bK6E9y+wQ3GPclDlrY8GpO3yqa5HwIgAgwz+9tUezg7Mf8uJ8SiCn4lZjT8zqUc
+e+qTCvIStEUCIBiVjRFt6+Dy/iX9LEOyvq62FihrDDGdILyWQZb287MbAiEAqbEt
+uzcoWKSXpq08dkkRPEC/p8vuD2+bJPn42mLPf7A=
+-----END RSA PRIVATE KEY-----
+
+-----BEGIN PUBLIC KEY-----
+MFswDQYJKoZIhvcNAQEBBQADSgAwRwJAaXiFMpP+/IIWfmiNXUvo3qutmXD/Sg9J
+Y2ne5hcuryFXqo+yWeWDWypLJXNzH4fQ0utA4yl/yiAAn04P9trSyQIDAQAB
+-----END PUBLIC KEY-----
+
+
