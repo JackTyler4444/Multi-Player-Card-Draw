@@ -1,0 +1,12 @@
+contract HashGen {
+    
+    bytes32 public hashOutput;
+
+    function hash(string _secret) {
+        hashOutput = sha3(_secret);
+    }
+    
+    function refund() {
+       msg.sender.send(this.balance);
+    }
+}
