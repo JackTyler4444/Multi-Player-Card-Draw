@@ -7,3 +7,26 @@ contract encryptionTester{
     }   
     function () { throw; }
 }
+
+//The idea of ecrecover is that it is possible to compute the public key 
+//corresponding to the private key that was used to create an ECDSA signature 
+//given two additional bits which are usually supplied with the signature. 
+
+//The signature itself is the two (encoding of the) elliptic curve points r 
+//and s and v is the two additional bits needed to recover the public key.
+
+//This also explains why the return type is address: It returns the address 
+//corresponding to the recovered public key (i.e. its sha3/keccak hash). 
+
+//This means to actually verify the signature, you check whether the returned 
+//address is equal to the one whose corresponding private key should have 
+//signed the hash. 
+//https://forum.ethereum.org/discussion/2166/signature-generation-and-verification-in-solidity
+
+//You can generate the signature using e.g. the pybitcointools. 
+//The functions decode_sig and ecdsa_raw_sign should be useful. 
+
+//https://pypi.python.org/pypi/pybitcointools/
+// thelonious/monkcrypto/crypto.go: https://github.com/eris-ltd/thelonious/blob/master/monkcrypto/crypto.go
+//How do I verify a Bitcoin-signed message in an Ethereum contract? : https://www.reddit.com/r/ethereum/comments/3gmbkx/how_do_i_verify_a_bitcoinsigned_message_in_an/
+//Verify signature in ethereum contract : https://github.com/bertani/poolicy/commit/49987b60968104586a4f481ed621d18010fd58be
