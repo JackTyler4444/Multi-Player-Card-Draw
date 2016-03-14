@@ -32,3 +32,4 @@ contract encryptionTester{
 //Verify signature in ethereum contract : https://github.com/bertani/poolicy/commit/49987b60968104586a4f481ed621d18010fd58be
 
 //http://www.righto.com/2014/02/bitcoins-hard-way-using-raw-bitcoin.html
+//https://www.realitykeys.com/developers/resources
