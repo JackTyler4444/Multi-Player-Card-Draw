@@ -1,10 +1,10 @@
 contract encryptionTester{
     address public encryptedOutput;
-    bytes 32 result_hash;
+    bytes32 public result_hash;
     
-    function result_hasher{
+    function result_hasher(bytes32 fact_hash, bytes32 signed_value){
         result_hash = sha3(fact_hash, signed_value);
-    {    
+    }    
     
     
     function encrypt(uint8 v, bytes32 r, bytes32 s) {
@@ -13,6 +13,7 @@ contract encryptionTester{
     }   
     function () { throw; }
 }
+
 
 //The idea of ecrecover is that it is possible to compute the public key 
 //corresponding to the private key that was used to create an ECDSA signature 
