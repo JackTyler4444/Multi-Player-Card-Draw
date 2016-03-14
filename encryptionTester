@@ -30,3 +30,5 @@ contract encryptionTester{
 // thelonious/monkcrypto/crypto.go: https://github.com/eris-ltd/thelonious/blob/master/monkcrypto/crypto.go
 //How do I verify a Bitcoin-signed message in an Ethereum contract? : https://www.reddit.com/r/ethereum/comments/3gmbkx/how_do_i_verify_a_bitcoinsigned_message_in_an/
 //Verify signature in ethereum contract : https://github.com/bertani/poolicy/commit/49987b60968104586a4f481ed621d18010fd58be
+
+//http://www.righto.com/2014/02/bitcoins-hard-way-using-raw-bitcoin.html
