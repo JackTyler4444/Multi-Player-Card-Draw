@@ -67,4 +67,23 @@ https://www.bitaddress.org/bitaddress.org-v3.2.0-SHA256-ad4fd171c647772aa76d0ce8
 
 Bitcoin python tutorial for beginners - keys and address: https://www.youtube.com/watch?v=tX-XokHf_nI
 
+This is the python code to gen the test data (https://forum.ethereum.org/discussion/comment/8740/#Comment_8740):
+
+from bitcoin import *
+message = "Sign this important message"
+privkey = random_key()
+print 'privkey', privkey
+pubkey = privtopub(privkey)
+print 'pubkey', pubkey
+print 'address', pubkey_to_address(pubkey)
+messageHash = sha256(message)
+vrs = ecdsa_raw_sign(messageHash,privkey)
+print 'vrs',vrs
+print 'v binary string',bin(vrs[0])
+recoveredPublicKey = ecdsa_raw_recover(messageHash, vrs)
+print 'recovered Pub Key', recoveredPublicKey
+print 'recovered Address', pubtoaddr(recoveredPublicKey)
+
+
+
 
