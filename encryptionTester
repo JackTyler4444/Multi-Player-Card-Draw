@@ -115,3 +115,15 @@ contract Auth {
 }
 
 
+
+*******************************************
+
+contract publicKeyFindandVerify{
+    address public pubKey;
+    
+    function pubGen(bytes32 hash, uint8 v, bytes32 r, bytes32 s) {
+        pubKey = ecrecover(hash,  v,  r,  s);
+        //recover public key from elliptic curve signature - arguments are (data, v, r, s)
+    }   
+    function () { throw; }
+}
