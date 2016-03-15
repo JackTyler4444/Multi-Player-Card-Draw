@@ -4,6 +4,7 @@ contract MultiplayerCardDraw {
         bytes32 blindedKey;
         uint deposit;
         address player;
+        string secretKey;
         bool revealed;
     }
 
@@ -56,6 +57,8 @@ contract MultiplayerCardDraw {
     mapping(address => Key[]) public keys;
 
     event gameEnded(address winner, bytes32 highCard);
+    
+    address public gameVerifier;
 
     /// Modifiers are a convenient way to validate inputs to
     /// functions. `onlyBefore` is applied to `bid` below:
@@ -71,8 +74,9 @@ contract MultiplayerCardDraw {
         numberOfPlayers = _numberOfPlayers;
         //9 players max
         if (numberOfPlayers > 9){
-            highCard = 0x3848d55b721bf7b0263af92a4a976b44761c128e9b9d35acc82ec8938764f718;
+            highCard = 0x13ff34612E995DF394503577144D7756069B7B43;
             gameEnded(playerOneAddress, highCard);
+            gameVerifier = 0x13ff34612E995DF394503577144D7756069B7B43;
             throw;
         }
         
@@ -103,6 +107,7 @@ contract MultiplayerCardDraw {
             blindedKey: _blindedKey,
             deposit: msg.value,
             player: msg.sender,
+            secretKey: '0',
             revealed: false
         }));
         //first time set the depositMin to first players depots
@@ -180,7 +185,7 @@ contract MultiplayerCardDraw {
     } 
  
     ///players reveal their keys
-    function reveal(bytes32 _secret)
+    function reveal(string _secret)
         onlyAfter(seatingEnd)
         onlyBefore(revealEnd)
     {
@@ -194,6 +199,7 @@ contract MultiplayerCardDraw {
             throw;
         }
         //flag each player that reveals
+        key.secretKey = secret;
         key.revealed = true;
  
         revealCount += 1;
@@ -231,29 +237,13 @@ contract MultiplayerCardDraw {
     }    
         
     //add up reveals, determine and pay winner
-    function claimHighCard()
+    function claimHighCard(address _gameWinner, bytes32 _highCard)
         onlyAfter(revealEnd)
     {   
-        if (revealCount < keyCount){
+        if (msg.sender != gameVerifier){
             throw;
         }
-
-        //highCard = numberOfPlayers;
-        
-        //search the deck for the number of players card
-        //pay the corresponding player seat to card
-        //position
-        for (uint i = 0; i <= numberOfPlayers; i++)
-        {
-            if (deck[i] == highCard){
-                gameWinner = playersAddresses[i];
-                gameEnded(gameWinner, highCard);
-                gameWinner.send(this.balance);
-                ended = true;
-                return;
-            }
-
-        } 
+        gameEnded(_gameWinner, _highCard);
     }
     function () { throw; }
 }
